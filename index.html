@@ -6,38 +6,57 @@
 <title>あなたに合う副業診断</title>
 <style>
   :root{
-    --bg:#0f172a;
+    --bg:#14151a;
     --card:#ffffff;
-    --accent:#2563eb;
-    --accent-dark:#1e40af;
-    --text:#1e293b;
-    --muted:#64748b;
-    --bar-bg:#e2e8f0;
+    --card-soft:#f7f6f3;
+    --accent:#1f6f5c;
+    --accent-dark:#12463a;
+    --gold:#c9a15a;
+    --text:#1c1c1e;
+    --muted:#6b6b70;
+    --bar-bg:#e7e5df;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
     font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
-    background:linear-gradient(160deg,#0f172a,#1e3a8a);
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:flex-start;
     padding:32px 16px;
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0);
+    background-size:26px 26px;
+    background-attachment:fixed;
   }
   .app{
     width:100%;
     max-width:560px;
     background:var(--card);
-    border-radius:16px;
-    box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    border-radius:14px;
+    box-shadow:0 30px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(201,161,90,0.15);
     overflow:hidden;
   }
   .header{
-    padding:28px 24px 20px;
+    padding:30px 24px 22px;
     text-align:center;
-    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
-    color:#fff;
+    background:var(--accent-dark);
+    color:#f4f1ea;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid rgba(201,161,90,0.4);
+  }
+  .header::before{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:3px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  }
+  .header h1, .header p{
+    position:relative;
   }
   .header h1{
     margin:0 0 6px;
@@ -87,17 +106,17 @@
   .option-btn{
     text-align:left;
     padding:14px 16px;
-    border:2px solid #e2e8f0;
-    background:#f8fafc;
-    border-radius:10px;
+    border:1px solid #e5e3dd;
+    background:var(--card-soft);
+    border-radius:8px;
     font-size:0.95rem;
     color:var(--text);
     cursor:pointer;
     transition:all .15s ease;
   }
   .option-btn:hover{
-    border-color:var(--accent);
-    background:#eff6ff;
+    border-color:var(--gold);
+    background:#fdf9ef;
   }
   .nav-row{
     display:flex;
@@ -124,13 +143,14 @@
   }
   .result-badge{
     display:inline-block;
-    background:#eff6ff;
-    color:var(--accent-dark);
-    font-size:0.8rem;
+    background:var(--accent-dark);
+    color:var(--gold);
+    font-size:0.78rem;
     font-weight:700;
-    padding:4px 14px;
+    letter-spacing:0.05em;
+    padding:5px 16px;
     border-radius:999px;
-    margin-bottom:12px;
+    margin-bottom:14px;
   }
   .result h2{
     font-size:1.5rem;
@@ -145,8 +165,9 @@
   }
   .result-desc{
     text-align:left;
-    background:#f8fafc;
-    border-radius:12px;
+    background:var(--card-soft);
+    border-left:3px solid var(--gold);
+    border-radius:8px;
     padding:18px;
     font-size:0.92rem;
     line-height:1.7;
@@ -160,8 +181,9 @@
     font-size:0.88rem;
     font-weight:700;
     color:var(--accent-dark);
-    background:#eff6ff;
-    border-radius:10px;
+    background:#f4f1ea;
+    border:1px solid rgba(201,161,90,0.4);
+    border-radius:8px;
     padding:12px 14px;
     margin-bottom:10px;
     line-height:1.5;
@@ -170,20 +192,20 @@
     display:inline-block;
     width:100%;
     padding:16px;
-    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
-    color:#fff;
-    border:none;
-    border-radius:10px;
+    background:var(--accent-dark);
+    color:#f4f1ea;
+    border:1px solid var(--gold);
+    border-radius:8px;
     font-size:1rem;
     font-weight:700;
     cursor:pointer;
-    box-shadow:0 8px 20px rgba(37,99,235,0.35);
+    box-shadow:0 8px 20px rgba(18,70,58,0.3);
   }
   .second-pick{
     text-align:left;
-    border:2px dashed #c7d2fe;
-    background:#eef2ff;
-    border-radius:12px;
+    border:1px dashed #c9a15a;
+    background:#faf7ef;
+    border-radius:8px;
     padding:16px 18px;
     margin-bottom:20px;
   }
@@ -191,8 +213,8 @@
     display:inline-block;
     font-size:0.72rem;
     font-weight:700;
-    color:#4338ca;
-    background:#e0e7ff;
+    color:#7a5a1e;
+    background:#f0e4c8;
     padding:3px 10px;
     border-radius:999px;
     margin-bottom:8px;
@@ -209,7 +231,7 @@
     color:var(--text);
   }
   .second-pick strong{
-    color:#4338ca;
+    color:#7a5a1e;
   }
   .line-share-btn{
     display:flex;
