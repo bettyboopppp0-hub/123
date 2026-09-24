@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あなたに合う副業診断</title>
+<style>
+  :root{
+    --bg:#0f172a;
+    --card:#ffffff;
+    --accent:#2563eb;
+    --accent-dark:#1e40af;
+    --text:#1e293b;
+    --muted:#64748b;
+    --bar-bg:#e2e8f0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:linear-gradient(160deg,#0f172a,#1e3a8a);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:32px 16px;
+  }
+  .app{
+    width:100%;
+    max-width:560px;
+    background:var(--card);
+    border-radius:16px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    overflow:hidden;
+  }
+  .header{
+    padding:28px 24px 20px;
+    text-align:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    color:#fff;
+  }
+  .header h1{
+    margin:0 0 6px;
+    font-size:1.35rem;
+  }
+  .header p{
+    margin:0;
+    font-size:0.85rem;
+    opacity:0.9;
+  }
+  .progress-wrap{
+    padding:16px 24px 0;
+  }
+  .progress-bar{
+    height:8px;
+    background:var(--bar-bg);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    width:0%;
+    transition:width .35s ease;
+  }
+  .progress-label{
+    font-size:0.75rem;
+    color:var(--muted);
+    margin-top:6px;
+    text-align:right;
+  }
+  .body{
+    padding:20px 24px 28px;
+  }
+  .question{
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--text);
+    margin:6px 0 18px;
+    line-height:1.5;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option-btn{
+    text-align:left;
+    padding:14px 16px;
+    border:2px solid #e2e8f0;
+    background:#f8fafc;
+    border-radius:10px;
+    font-size:0.95rem;
+    color:var(--text);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .option-btn:hover{
+    border-color:var(--accent);
+    background:#eff6ff;
+  }
+  .nav-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:20px;
+  }
+  .back-btn{
+    background:none;
+    border:none;
+    color:var(--muted);
+    font-size:0.85rem;
+    cursor:pointer;
+    padding:8px 4px;
+  }
+  .back-btn:disabled{
+    visibility:hidden;
+  }
+  .back-btn:hover{
+    color:var(--accent);
+  }
+  /* 結果画面 */
+  .result{
+    text-align:center;
+  }
+  .result-badge{
+    display:inline-block;
+    background:#eff6ff;
+    color:var(--accent-dark);
+    font-size:0.8rem;
+    font-weight:700;
+    padding:4px 14px;
+    border-radius:999px;
+    margin-bottom:12px;
+  }
+  .result h2{
+    font-size:1.5rem;
+    margin:0 0 8px;
+    color:var(--text);
+  }
+  .result .match{
+    font-size:0.9rem;
+    color:var(--accent-dark);
+    font-weight:700;
+    margin-bottom:18px;
+  }
+  .result-desc{
+    text-align:left;
+    background:#f8fafc;
+    border-radius:12px;
+    padding:18px;
+    font-size:0.92rem;
+    line-height:1.7;
+    color:var(--text);
+    margin-bottom:20px;
+  }
+  .result-desc strong{
+    color:var(--accent-dark);
+  }
+  .cta-btn{
+    display:inline-block;
+    width:100%;
+    padding:16px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    font-size:1rem;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(37,99,235,0.35);
+  }
+  .retry-link{
+    display:block;
+    margin-top:14px;
+    font-size:0.82rem;
+    color:var(--muted);
+    text-decoration:underline;
+    cursor:pointer;
+    background:none;
+    border:none;
+  }
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>あなたに合う副業診断</h1>
+    <p>10個の質問に答えるだけ。あなたにピッタリの副業タイプがわかります。</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">質問 1 / 10</div>
+  </div>
+
+  <div class="body">
+    <div id="quizScreen">
+      <div class="question" id="questionText"></div>
+      <div class="options" id="optionsWrap"></div>
+      <div class="nav-row">
+        <button class="back-btn" id="backBtn">← 前の質問に戻る</button>
+      </div>
+    </div>
+
+    <div id="resultScreen" class="result hidden">
+      <div class="result-badge">診断結果</div>
+      <h2 id="resultTitle"></h2>
+      <div class="match" id="resultMatch"></div>
+      <div class="result-desc" id="resultDesc"></div>
+      <button class="cta-btn" id="ctaBtn">この副業についてもっと詳しく見る</button>
+      <button class="retry-link" id="retryBtn">もう一度診断する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  スコア方式:
+  各選択肢が複数の副業タイプにスコアを加算する。
+  CADとブログ・アフィリエイトには基礎加点(バイアス)を与え、
+  出やすさの優先順位「CAD > ブログ・アフィリエイト > その他」を実現する。
+*/
+
+const TYPES = {
+  cad: {
+    title: "CAD副業タイプ",
+    match: "あなたにぴったりの副業は「CAD（図面作成・製図代行）」です！",
+    desc: `<strong>コツコツ丁寧な作業が得意</strong>で、<strong>専門スキルを積み上げたいタイプ</strong>です。
+    CADは一度スキルを身につければ、建築・機械・電気などの図面作成案件を在宅で受注でき、
+    未経験からでも学習すれば単価が伸びやすい将来性のある副業です。
+    正確さとコツコツ継続する力があるあなたには、CADの学習からの副業デビューがおすすめです。`
+  },
+  blog: {
+    title: "ブログ・アフィリエイトタイプ",
+    match: "あなたにぴったりの副業は「ブログ・アフィリエイト」です！",
+    desc: `<strong>自分のペースでコツコツ資産を積み上げたいタイプ</strong>です。
+    最初は成果が出るまで時間がかかりますが、記事という資産を積み上げることで、
+    将来的に自動的に収益が発生する仕組みを作れます。
+    文章を書くことや情報を調べることが好きなあなたに向いています。`
+  },
+  sedori: {
+    title: "せどり（物販）タイプ",
+    match: "あなたにぴったりの副業は「せどり・物販」です！",
+    desc: `<strong>行動力があり、すぐに結果を出したいタイプ</strong>です。
+    仕入れて売るというシンプルな仕組みで、始めたその日から利益を出せる可能性があります。
+    リサーチや商品を見る目を養うのが好きなあなたに向いています。`
+  },
+  invest: {
+    title: "投資タイプ",
+    match: "あなたにぴったりの副業は「投資（株・FX・仮想通貨など）」です！",
+    desc: `<strong>数字やデータの分析が好きで、長期的な視点を持てるタイプ</strong>です。
+    労働時間を増やさずに資産を増やす仕組みに興味があるあなたには、
+    少額から始められる投資の勉強がおすすめです。`
+  },
+  sns: {
+    title: "SNS運用代行タイプ",
+    match: "あなたにぴったりの副業は「SNS運用代行」です！",
+    desc: `<strong>人とのコミュニケーションやトレンドを追うのが得意なタイプ</strong>です。
+    企業や個人のSNSアカウントを運用代行することで、
+    継続案件として安定収入につながりやすい副業です。`
+  },
+  video: {
+    title: "動画編集タイプ",
+    match: "あなたにぴったりの副業は「動画編集」です！",
+    desc: `<strong>クリエイティブな作業や細かい編集作業が好きなタイプ</strong>です。
+    YouTubeやSNS動画の需要は右肩上がりで、
+    スキルを身につければ在宅で継続的に案件を受注しやすい分野です。`
+  },
+  program: {
+    title: "プログラミングタイプ",
+    match: "あなたにぴったりの副業は「プログラミング（受託・Web制作）」です！",
+    desc: `<strong>論理的思考が得意で、じっくり物事を組み立てるのが好きなタイプ</strong>です。
+    習得までに時間はかかりますが、Web制作やシステム開発は単価が高く、
+    長期的なキャリアにもつながる副業です。`
+  },
+  writing: {
+    title: "ライティング・軽作業タイプ",
+    match: "あなたにぴったりの副業は「Webライティング・クラウドソーシング軽作業」です！",
+    desc: `<strong>まずはリスクなく始めたいタイプ</strong>です。
+    記事執筆やデータ入力、文字起こしなどは特別なスキルがなくても始めやすく、
+    副業の第一歩として最適です。慣れてきたら単価の高い案件にも挑戦できます。`
+  }
+};
+
+/*
+  各タイプが選択肢として登場する回数を8タイプ×5回で揃え、
+  1回選択したときの加点も一律3点にすることで「素の最大到達点」を全タイプ15点で統一。
+  その上でCAD/ブログにのみ小さめの基礎バイアスを乗せ、
+  「出やすさ: CAD > ブログ・アフィリエイト > その他」を、
+  他タイプが明確に選ばれたときにはそちらが勝てる範囲で実現する。
+*/
+const QUESTIONS = [
+  {
+    q: "Q1. 副業に一番求めるものは？",
+    options: [
+      { text: "専門スキルを身につけて長く稼げるようになりたい", scores: {cad:3} },
+      { text: "自分の発信や記事を資産として積み上げたい", scores: {blog:3} },
+      { text: "仕入れて売る、シンプルな仕組みで稼ぎたい", scores: {sedori:3} },
+      { text: "お金を運用して増やす力を身につけたい", scores: {invest:3} }
+    ]
+  },
+  {
+    q: "Q2. 得意・興味がある作業は？",
+    options: [
+      { text: "SNSでの発信やコミュニケーション", scores: {sns:3} },
+      { text: "動画編集などのクリエイティブ作業", scores: {video:3} },
+      { text: "パソコンでの論理的なものづくり（プログラミング等）", scores: {program:3} },
+      { text: "文章入力やリサーチなどコツコツ作業", scores: {writing:3} }
+    ]
+  },
+  {
+    q: "Q3. これまで興味を持ったことがあるものは？",
+    options: [
+      { text: "設計図やものづくり、建築・機械系の話", scores: {cad:3} },
+      { text: "ブログやSNSでの情報発信", scores: {blog:3} },
+      { text: "SNSのトレンドやバズっている投稿", scores: {sns:3} },
+      { text: "YouTubeなどの動画コンテンツ", scores: {video:3} }
+    ]
+  },
+  {
+    q: "Q4. 副業に対する希望は？",
+    options: [
+      { text: "仕入れ値と売値の差で利益を出したい", scores: {sedori:3} },
+      { text: "少額から資金を運用してみたい", scores: {invest:3} },
+      { text: "自宅でWeb制作やアプリ開発に挑戦したい", scores: {program:3} },
+      { text: "まずはリスクなく軽作業から始めたい", scores: {writing:3} }
+    ]
+  },
+  {
+    q: "Q5. 将来目指したい働き方は？",
+    options: [
+      { text: "専門スキルで手に職をつけたい", scores: {cad:3} },
+      { text: "自分の資産（記事・フォロワーなど）を育てたい", scores: {blog:3} },
+      { text: "技術力を活かして高単価案件を受注したい", scores: {program:3} },
+      { text: "スキマ時間でコツコツ稼ぎたい", scores: {writing:3} }
+    ]
+  },
+  {
+    q: "Q6. 性格として近いのは？",
+    options: [
+      { text: "行動力があり、すぐ動くタイプ", scores: {sedori:3} },
+      { text: "冷静にデータや数字を分析するタイプ", scores: {invest:3} },
+      { text: "人と関わったり発信するのが好きなタイプ", scores: {sns:3} },
+      { text: "発想力・表現力があるタイプ", scores: {video:3} }
+    ]
+  },
+  {
+    q: "Q7. 学習にかけられる時間は？",
+    options: [
+      { text: "3ヶ月以上かけてじっくりスキルを積み上げたい", scores: {cad:3} },
+      { text: "行動しながら短期間で結果を出したい", scores: {sedori:3} },
+      { text: "発信しながら継続学習していきたい", scores: {sns:3} },
+      { text: "1〜2ヶ月で編集スキルを身につけたい", scores: {video:3} }
+    ]
+  },
+  {
+    q: "Q8. 初期費用に対する考えは？",
+    options: [
+      { text: "自分の資産を育てるためコツコツ書いていきたい", scores: {blog:3} },
+      { text: "運用資金として用意できる", scores: {invest:3} },
+      { text: "動画編集の機材・ソフトに投資してもいい", scores: {video:3} },
+      { text: "できるだけ0円で始めたい", scores: {writing:3} }
+    ]
+  },
+  {
+    q: "Q9. パソコン作業についてどう感じますか？",
+    options: [
+      { text: "細かい図面・設計ソフトの操作も苦にならない", scores: {cad:3} },
+      { text: "資金を増やすために数字を追うのが好き", scores: {invest:3} },
+      { text: "コードを書いて何かを組み立てるのが好き", scores: {program:3} },
+      { text: "文章入力やデータ整理は得意", scores: {writing:3} }
+    ]
+  },
+  {
+    q: "Q10. 最終的にどんな副業なら続けられそうですか？",
+    options: [
+      { text: "自分の発信が資産になっていくもの", scores: {blog:3} },
+      { text: "リサーチや仕入れ判断で利益を出すもの", scores: {sedori:3} },
+      { text: "人とのつながりを活かして発信するもの", scores: {sns:3} },
+      { text: "技術力を武器に案件を受注できるもの", scores: {program:3} }
+    ]
+  }
+];
+
+// CAD > ブログ・アフィリエイト > その他 の優先順位のための基礎バイアス（各タイプの素の最大点=15に対して小さめに設定）
+const BASE_BIAS = {
+  cad: 3,
+  blog: 2,
+  sedori: 0,
+  invest: 0,
+  sns: 0,
+  video: 0,
+  program: 0,
+  writing: 0
+};
+
+let current = 0;
+const answers = [];
+const scores = Object.fromEntries(Object.keys(TYPES).map(k => [k, BASE_BIAS[k] || 0]));
+
+const questionText = document.getElementById('questionText');
+const optionsWrap = document.getElementById('optionsWrap');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const backBtn = document.getElementById('backBtn');
+const quizScreen = document.getElementById('quizScreen');
+const resultScreen = document.getElementById('resultScreen');
+
+function renderQuestion(){
+  const item = QUESTIONS[current];
+  questionText.textContent = item.q;
+  optionsWrap.innerHTML = '';
+  item.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt.text;
+    btn.addEventListener('click', () => selectOption(idx));
+    optionsWrap.appendChild(btn);
+  });
+  progressFill.style.width = ((current) / QUESTIONS.length * 100) + '%';
+  progressLabel.textContent = `質問 ${current + 1} / ${QUESTIONS.length}`;
+  backBtn.disabled = current === 0;
+}
+
+function selectOption(idx){
+  const item = QUESTIONS[current];
+  const opt = item.options[idx];
+  answers[current] = idx;
+
+  if (answers.length > current + 1) {
+    answers.length = current + 1;
+  }
+
+  applyScoresFromScratch();
+
+  if (current < QUESTIONS.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function applyScoresFromScratch(){
+  Object.keys(scores).forEach(k => scores[k] = BASE_BIAS[k] || 0);
+  answers.forEach((ansIdx, qIdx) => {
+    if (ansIdx === undefined) return;
+    const opt = QUESTIONS[qIdx].options[ansIdx];
+    Object.entries(opt.scores).forEach(([type, val]) => {
+      scores[type] = (scores[type] || 0) + val;
+    });
+  });
+}
+
+backBtn.addEventListener('click', () => {
+  if (current > 0) {
+    current--;
+    renderQuestion();
+  }
+});
+
+function showResult(){
+  let bestType = 'cad';
+  let bestScore = -Infinity;
+  Object.entries(scores).forEach(([type, val]) => {
+    if (val > bestScore) {
+      bestScore = val;
+      bestType = type;
+    }
+  });
+
+  const result = TYPES[bestType];
+  document.getElementById('resultTitle').textContent = result.title;
+  document.getElementById('resultMatch').textContent = result.match;
+  document.getElementById('resultDesc').innerHTML = result.desc;
+
+  quizScreen.classList.add('hidden');
+  resultScreen.classList.remove('hidden');
+  progressFill.style.width = '100%';
+  progressLabel.textContent = '診断完了';
+}
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  current = 0;
+  answers.length = 0;
+  applyScoresFromScratch();
+  resultScreen.classList.add('hidden');
+  quizScreen.classList.remove('hidden');
+  renderQuestion();
+});
+
+document.getElementById('ctaBtn').addEventListener('click', () => {
+  alert('ここに副業メソッドの詳細ページ・LPへのリンクを設定してください。');
+});
+
+renderQuestion();
+</script>
+</body>
+</html>
