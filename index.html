@@ -169,6 +169,38 @@
     cursor:pointer;
     box-shadow:0 8px 20px rgba(37,99,235,0.35);
   }
+  .second-pick{
+    text-align:left;
+    border:2px dashed #c7d2fe;
+    background:#eef2ff;
+    border-radius:12px;
+    padding:16px 18px;
+    margin-bottom:20px;
+  }
+  .second-pick-label{
+    display:inline-block;
+    font-size:0.72rem;
+    font-weight:700;
+    color:#4338ca;
+    background:#e0e7ff;
+    padding:3px 10px;
+    border-radius:999px;
+    margin-bottom:8px;
+  }
+  .second-pick h3{
+    margin:0 0 8px;
+    font-size:1.05rem;
+    color:var(--text);
+  }
+  .second-pick p{
+    margin:0;
+    font-size:0.86rem;
+    line-height:1.6;
+    color:var(--text);
+  }
+  .second-pick strong{
+    color:#4338ca;
+  }
   .retry-link{
     display:block;
     margin-top:14px;
@@ -208,6 +240,11 @@
       <h2 id="resultTitle"></h2>
       <div class="match" id="resultMatch"></div>
       <div class="result-desc" id="resultDesc"></div>
+      <div class="second-pick" id="secondPick">
+        <span class="second-pick-label">第2候補</span>
+        <h3 id="secondPickTitle"></h3>
+        <p id="secondPickDesc"></p>
+      </div>
       <button class="cta-btn" id="ctaBtn">この副業についてもっと詳しく見る</button>
       <button class="retry-link" id="retryBtn">もう一度診断する</button>
     </div>
@@ -474,6 +511,19 @@ function showResult(){
   document.getElementById('resultTitle').textContent = result.title;
   document.getElementById('resultMatch').textContent = result.match;
   document.getElementById('resultDesc').innerHTML = result.desc;
+
+  // 第2候補は必ずCADかブログ・アフィリエイトのどちらか（1位と異なる方を優先）
+  let secondType;
+  if (bestType === 'cad') {
+    secondType = 'blog';
+  } else if (bestType === 'blog') {
+    secondType = 'cad';
+  } else {
+    secondType = scores.cad >= scores.blog ? 'cad' : 'blog';
+  }
+  const second = TYPES[secondType];
+  document.getElementById('secondPickTitle').textContent = second.title;
+  document.getElementById('secondPickDesc').innerHTML = second.desc;
 
   quizScreen.classList.add('hidden');
   resultScreen.classList.remove('hidden');
