@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bettyboopppp0-hub.github.io/123/sitemap.xml
